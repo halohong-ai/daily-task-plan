@@ -1,0 +1,33 @@
+name: Publish macOS beta
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-beta.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify app archive
+        run: |
+          printf '%s  %s\n' '38586e821b71d8b8eb3ca495e7944e179cfca11c0de94463a7b478313ddee2a9' 'downloads/每日任务计划-v1.0.0-beta.1.zip' | sha256sum -c -
+      - name: Publish prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view v1.0.0-beta.1 >/dev/null 2>&1; then
+            echo "Release already exists"
+            exit 0
+          fi
+          gh release create v1.0.0-beta.1 "downloads/每日任务计划-v1.0.0-beta.1.zip" \
+            --title "每日任务计划 v1.0.0-beta.1" \
+            --notes-file RELEASE_NOTES.md \
+            --prerelease \
+            --latest=false
