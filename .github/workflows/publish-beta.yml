@@ -22,12 +22,25 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh release view v1.0.0-beta.1 >/dev/null 2>&1; then
-            echo "Release already exists"
-            exit 0
+          set -euo pipefail
+          asset="daily-task-plan-macos-v1.0.0-beta.1.zip"
+          cp "downloads/每日任务计划-v1.0.0-beta.1.zip" "$asset"
+          if ! gh release view v1.0.0-beta.1 >/dev/null 2>&1; then
+            gh release create v1.0.0-beta.1 "$asset" \
+              --title "每日任务计划 v1.0.0-beta.1" \
+              --notes-file RELEASE_NOTES.md \
+              --prerelease \
+              --latest=false
+          else
+            if ! gh release view v1.0.0-beta.1 --json assets --jq '.assets[].name' | grep -Fxq "$asset"; then
+              gh release upload v1.0.0-beta.1 "$asset"
+            fi
+            gh release edit v1.0.0-beta.1 \
+              --notes-file RELEASE_NOTES.md \
+              --prerelease \
+              --latest=false
           fi
-          gh release create v1.0.0-beta.1 "downloads/每日任务计划-v1.0.0-beta.1.zip" \
-            --title "每日任务计划 v1.0.0-beta.1" \
-            --notes-file RELEASE_NOTES.md \
-            --prerelease \
-            --latest=false
+          old_asset_id="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/v1.0.0-beta.1" --jq '.assets[] | select(.name == "-v1.0.0-beta.1.zip") | .id')"
+          if [[ -n "$old_asset_id" ]]; then
+            gh api --method DELETE "repos/${GITHUB_REPOSITORY}/releases/assets/$old_asset_id"
+          fi
