@@ -4,7 +4,9 @@
 
 ## 下载
 
-请到 [Releases](https://github.com/halohong-ai/daily-task-plan/releases) 下载“每日任务计划.zip”。这是 **未经 Apple 公证的测试版**，仅支持 macOS 12 或更新版本，不支持 Windows。首次打开可能被 macOS 拦截。请只从本仓库的 Releases 下载，并核对发布页提供的 SHA-256 值。
+到 [Releases](https://github.com/halohong-ai/daily-task-plan/releases/tag/v1.0.0-beta.1) 下载 `daily-task-plan-macos-v1.0.0-beta.1.zip`。这是 **未经 Apple 公证的测试版**，仅支持 macOS 12 或更新版本，不支持 Windows。首次打开可能被 macOS 拦截。
+
+文件 SHA-256：`38586e821b71d8b8eb3ca495e7944e179cfca11c0de94463a7b478313ddee2a9`
 
 ## 安装与首次打开
 
